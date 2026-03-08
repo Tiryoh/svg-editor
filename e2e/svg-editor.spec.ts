@@ -5,6 +5,7 @@ const TEST_SVG = path.resolve("public/test.svg");
 const TEST_STROKES_SVG = path.resolve("public/test-strokes.svg");
 const TEST_ROUND_CAP_SVG = path.resolve("public/test-round-cap.svg");
 const TEST_COMPLEX_PATHS_SVG = path.resolve("public/test-complex-paths.svg");
+const TEST_CSS_COLORS_SVG = path.resolve("public/test-css-colors.svg");
 
 async function uploadSvg(page: import("@playwright/test").Page, filePath: string) {
   const fileInput = page.locator('input[type="file"][accept=".svg"]').first();
@@ -441,6 +442,36 @@ test.describe("SVG Editor", () => {
     for (const len of pathLengths) {
       expect(len).toBeGreaterThan(20);
     }
+  });
+
+  // ── Color palette: CSS inheritance & inline style ─────────────
+
+  test("color palette detects inherited fill from parent group", async ({ page }) => {
+    await uploadSvg(page, TEST_CSS_COLORS_SVG);
+
+    // #FF6600 is set via <g fill="#FF6600"> inheritance
+    await expect(page.getByText("#FF6600")).toBeVisible();
+  });
+
+  test("color palette respects inline style over fill attribute", async ({ page }) => {
+    await uploadSvg(page, TEST_CSS_COLORS_SVG);
+
+    // The rect has fill="#000000" but style="fill:#00CC44", style should win
+    await expect(page.getByText("#00CC44")).toBeVisible();
+  });
+
+  test("color palette detects stroke from inline style", async ({ page }) => {
+    await uploadSvg(page, TEST_CSS_COLORS_SVG);
+
+    // line has style="stroke:#9933FF"
+    await expect(page.getByText("#9933FF")).toBeVisible();
+  });
+
+  test("color palette resolves named colors", async ({ page }) => {
+    await uploadSvg(page, TEST_CSS_COLORS_SVG);
+
+    // circle has fill="navy" => #000080
+    await expect(page.getByText("#000080")).toBeVisible();
   });
 
   // ── Small path deletion ───────────────────────────────────────

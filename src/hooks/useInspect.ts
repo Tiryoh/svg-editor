@@ -31,35 +31,27 @@ function collectColors(svgEl: SVGSVGElement): ColorInfo[] {
   const elements = svgEl.querySelectorAll(SHAPE_SELECTOR);
 
   for (const el of elements) {
-    const attrs: string[] = [];
+    const colorValues: string[] = [];
 
-    // Check fill
-    const fill =
-      (el as SVGElement).getAttribute("fill") ||
-      (el as HTMLElement).style?.fill ||
-      "";
-    if (fill) attrs.push(fill);
+    try {
+      const computed = getComputedStyle(el as Element);
 
-    // Check stroke
-    const stroke =
-      (el as SVGElement).getAttribute("stroke") ||
-      (el as HTMLElement).style?.stroke ||
-      "";
-    if (stroke) attrs.push(stroke);
+      // fill — getComputedStyle resolves CSS inheritance, style attr, and presentation attrs
+      const fill = computed.fill;
+      if (fill) colorValues.push(fill);
 
-    // If no explicit fill/stroke, try computed style
-    if (attrs.length === 0) {
-      try {
-        const computed = getComputedStyle(el as Element);
-        if (computed.fill) attrs.push(computed.fill);
-        if (computed.stroke && computed.stroke !== "none")
-          attrs.push(computed.stroke);
-      } catch {
-        // not in DOM
-      }
+      // stroke
+      const stroke = computed.stroke;
+      if (stroke && stroke !== "none") colorValues.push(stroke);
+    } catch {
+      // Element not in DOM — fall back to attributes
+      const fill = (el as SVGElement).getAttribute("fill") || "";
+      if (fill) colorValues.push(fill);
+      const stroke = (el as SVGElement).getAttribute("stroke") || "";
+      if (stroke) colorValues.push(stroke);
     }
 
-    for (const raw of attrs) {
+    for (const raw of colorValues) {
       const parsed = parseColor(raw);
       if (!parsed) continue;
       const key = parsed.hex;
@@ -83,10 +75,12 @@ function countStrokes(svgEl: SVGSVGElement): number {
   const elements = svgEl.querySelectorAll(SHAPE_SELECTOR);
   let count = 0;
   for (const el of elements) {
-    const stroke =
-      (el as SVGElement).getAttribute("stroke") ||
-      (el as HTMLElement).style?.stroke ||
-      "";
+    let stroke = "";
+    try {
+      stroke = getComputedStyle(el as Element).stroke;
+    } catch {
+      stroke = (el as SVGElement).getAttribute("stroke") || "";
+    }
     if (stroke && stroke !== "none" && stroke !== "transparent") {
       count++;
     }

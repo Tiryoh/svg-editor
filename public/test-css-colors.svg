@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+  <!-- 1. fill via CSS inheritance from parent group -->
+  <g fill="#FF6600">
+    <rect x="10" y="10" width="50" height="50"/>
+    <circle cx="100" cy="35" r="25"/>
+  </g>
+
+  <!-- 2. fill via inline style attribute (should take priority over fill attr) -->
+  <rect x="10" y="80" width="50" height="50" fill="#000000" style="fill:#00CC44"/>
+
+  <!-- 3. stroke via inline style -->
+  <line x1="80" y1="80" x2="80" y2="130" style="stroke:#9933FF; stroke-width:4"/>
+
+  <!-- 4. Named color -->
+  <circle cx="150" cy="105" r="20" fill="navy"/>
+
+  <!-- 5. Regular attribute (baseline) -->
+  <rect x="200" y="80" width="50" height="50" fill="#E06738"/>
+</svg>
