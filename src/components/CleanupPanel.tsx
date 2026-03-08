@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   strokeCount: number;
@@ -12,6 +12,14 @@ export function CleanupPanel({
   onOutlineStrokes,
 }: Props) {
   const [processing, setProcessing] = useState(false);
+  const [outlineMessage, setOutlineMessage] = useState<string | null>(null);
+
+  // Auto-dismiss message after 10 seconds
+  useEffect(() => {
+    if (!outlineMessage) return;
+    const timer = setTimeout(() => setOutlineMessage(null), 10000);
+    return () => clearTimeout(timer);
+  }, [outlineMessage]);
 
   const handleFlatten = () => {
     const hasEvenOdd =
@@ -28,8 +36,12 @@ export function CleanupPanel({
     )
       return;
     setProcessing(true);
+    setOutlineMessage(null);
     try {
       await onOutlineStrokes();
+      setOutlineMessage(
+        "アウトライン化が完了しました。複雑なパスや破線は変換精度が落ちる場合があります。プレビューで目視確認してください。",
+      );
     } finally {
       setProcessing(false);
     }
@@ -57,6 +69,18 @@ export function CleanupPanel({
             <span className="ml-1 text-gray-400">({strokeCount}件)</span>
           )}
         </button>
+        {outlineMessage && (
+          <div className="px-3 py-2 bg-amber-50 text-amber-800 text-[11px] rounded border border-amber-200 leading-relaxed">
+            {outlineMessage}
+            <button
+              onClick={() => setOutlineMessage(null)}
+              className="ml-1 text-amber-500 hover:text-amber-700"
+              aria-label="閉じる"
+            >
+              ✕
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

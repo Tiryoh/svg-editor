@@ -7,19 +7,23 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "paper": "^0.12.18",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "svg-path-parser": "^1.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.58.2",
     "@types/node": "^24.10.1",
     "@types/paper": "^0.11.14",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "@types/svg-path-parser": "^1.1.6",
     "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.27",
     "eslint": "^9.39.1",

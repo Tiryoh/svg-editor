@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+  <!-- Horizontal line with round cap -->
+  <path d="M50,40 L200,40" stroke="#E06738" stroke-width="20" fill="none" stroke-linecap="round"/>
+
+  <!-- Diagonal line with round cap -->
+  <path d="M50,100 L200,140" stroke="#3B82F6" stroke-width="16" fill="none" stroke-linecap="round"/>
+
+  <!-- Short line (cap size > line length) -->
+  <path d="M50,180 L70,180" stroke="#10B981" stroke-width="20" fill="none" stroke-linecap="round"/>
+</svg>

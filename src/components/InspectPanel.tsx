@@ -1,4 +1,7 @@
+import { useState } from "react";
 import type { InspectResult } from "../hooks/useInspect";
+
+type ColorMode = "cmyk" | "rgb";
 
 type Props = {
   result: InspectResult;
@@ -15,6 +18,8 @@ export function InspectPanel({
   onHighlightSmallPaths,
   onDeleteSmallPaths,
 }: Props) {
+  const [colorMode, setColorMode] = useState<ColorMode>("rgb");
+
   return (
     <div className="space-y-4">
       <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -56,9 +61,25 @@ export function InspectPanel({
 
       {/* Color palette */}
       <div>
-        <h4 className="text-xs font-medium text-gray-600 mb-2">
-          色パレット ({result.colors.length}色)
-        </h4>
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-xs font-medium text-gray-600">
+            色パレット ({result.colors.length}色)
+          </h4>
+          <div className="flex text-[10px] border border-gray-300 rounded overflow-hidden">
+            <button
+              onClick={() => setColorMode("cmyk")}
+              className={`px-1.5 py-0.5 ${colorMode === "cmyk" ? "bg-gray-200 font-medium" : "hover:bg-gray-50"}`}
+            >
+              CMYK
+            </button>
+            <button
+              onClick={() => setColorMode("rgb")}
+              className={`px-1.5 py-0.5 border-l border-gray-300 ${colorMode === "rgb" ? "bg-gray-200 font-medium" : "hover:bg-gray-50"}`}
+            >
+              RGB
+            </button>
+          </div>
+        </div>
         <div className="space-y-1.5">
           {result.colors.map((c) => (
             <div
@@ -72,7 +93,9 @@ export function InspectPanel({
               <div className="flex-1 min-w-0">
                 <div className="font-mono">{c.hex}</div>
                 <div className="text-gray-400">
-                  C{c.cmyk.c} M{c.cmyk.m} Y{c.cmyk.y} K{c.cmyk.k}
+                  {colorMode === "cmyk"
+                    ? `C${c.cmyk.c} M${c.cmyk.m} Y${c.cmyk.y} K${c.cmyk.k}`
+                    : `rgb(${c.rgb.r}, ${c.rgb.g}, ${c.rgb.b})`}
                 </div>
               </div>
               <span className="text-gray-400 flex-shrink-0">{c.count}</span>
@@ -85,7 +108,7 @@ export function InspectPanel({
             </div>
           ))}
         </div>
-        {result.colors.length > 0 && (
+        {result.colors.length > 0 && colorMode === "cmyk" && (
           <p className="text-[10px] text-gray-400 mt-1">
             ※ CMYK値は近似値です
           </p>

@@ -1,3 +1,4 @@
+import { useCallback, useRef } from "react";
 import type { SelectionMode } from "../hooks/useSelection";
 import type { ColorInfo } from "../hooks/useInspect";
 
@@ -26,6 +27,17 @@ export function EditPanel({
   undoRemaining,
   onUndo,
 }: Props) {
+  const onColorChangeRef = useRef(onColorChange);
+  onColorChangeRef.current = onColorChange;
+
+  const colorCallbackRef = useCallback((el: HTMLInputElement | null) => {
+    if (!el) return;
+    const handler = (e: Event) => {
+      onColorChangeRef.current((e.target as HTMLInputElement).value);
+    };
+    el.addEventListener("input", handler);
+  }, []);
+
   return (
     <div className="space-y-3">
       <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -67,8 +79,8 @@ export function EditPanel({
           <div className="flex items-center gap-2">
             <label className="text-xs text-gray-600">色変更:</label>
             <input
+              ref={colorCallbackRef}
               type="color"
-              onChange={(e) => onColorChange(e.target.value)}
               className="w-6 h-6 cursor-pointer border border-gray-300 rounded"
             />
           </div>

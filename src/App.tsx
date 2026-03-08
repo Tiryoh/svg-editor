@@ -10,6 +10,8 @@ import { useSelection } from "./hooks/useSelection";
 import { useUndoStack } from "./hooks/useUndoStack";
 import { detectSmallPaths } from "./utils/smallPathDetector";
 import { exportSvg } from "./utils/svgExport";
+import { flattenLayers } from "./utils/flatten";
+import { outlineStrokes } from "./utils/strokeToPath";
 
 function App() {
   const {
@@ -111,124 +113,18 @@ function App() {
     const svg = svgElRef.current;
     if (!svg) return;
 
-    // Flatten: move all shapes to root, applying transforms
-    const groups = svg.querySelectorAll("g");
-    // Process from deepest to shallowest
-    const groupArray = Array.from(groups).reverse();
-
-    for (const g of groupArray) {
-      const children = Array.from(g.children);
-      for (const child of children) {
-        if (child instanceof SVGGraphicsElement) {
-          try {
-            const ctm = child.getCTM();
-            const svgCTM = svg.getCTM();
-            if (ctm && svgCTM) {
-              // Get transform relative to SVG root
-              const rootInverse = svgCTM.inverse();
-              const localToRoot = rootInverse.multiply(ctm);
-
-              // Apply transform attribute
-              const t = localToRoot;
-              child.setAttribute(
-                "transform",
-                `matrix(${t.a} ${t.b} ${t.c} ${t.d} ${t.e} ${t.f})`,
-              );
-            }
-          } catch {
-            // getCTM may fail
-          }
-
-          // Preserve fill-rule from parent/root
-          const rootStyle = svg.getAttribute("style") || "";
-          if (rootStyle.includes("evenodd")) {
-            (child as SVGElement).style.fillRule = "evenodd";
-            (child as SVGElement).style.clipRule = "evenodd";
-          }
-        }
-        // Move to SVG root
-        svg.appendChild(child);
-      }
-      // Remove empty group
-      g.remove();
-    }
-
+    flattenLayers(svg);
+    clearSelection();
     notifyChange();
-  }, [svgElRef, notifyChange]);
+  }, [svgElRef, clearSelection, notifyChange]);
 
   const handleOutlineStrokes = useCallback(async () => {
     const svg = svgElRef.current;
     if (!svg) return;
 
-    // Use paper.js for stroke outlining
     try {
-      const paper = await import("paper");
-      const canvas = document.createElement("canvas");
-      canvas.width = 1;
-      canvas.height = 1;
-      paper.default.setup(canvas);
-
-      const svgString = new XMLSerializer().serializeToString(svg);
-      const imported = paper.default.project.importSVG(svgString);
-
-      // Process all items with strokes
-      const items = imported.getItems({ recursive: true });
-      for (const item of items) {
-        if (
-          item instanceof paper.default.Path &&
-          item.strokeWidth > 0 &&
-          item.strokeColor
-        ) {
-          const strokeColor = item.strokeColor.toCSS(true);
-          const hasFill =
-            item.fillColor !== null &&
-            item.fillColor !== undefined;
-
-          // Create outline by expanding the stroke
-          const strokePath = item.clone();
-          strokePath.strokeWidth = 0;
-          strokePath.fillColor = new paper.default.Color(strokeColor);
-
-          if (!hasFill) {
-            item.remove();
-          } else {
-            item.strokeWidth = 0;
-            item.strokeColor = null;
-          }
-        }
-      }
-
-      // Export back
-      const exportedSvg = paper.default.project.exportSVG({
-        asString: true,
-      }) as string;
-
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(exportedSvg, "image/svg+xml");
-      const newSvg = doc.querySelector("svg");
-
-      if (newSvg) {
-        // Preserve original viewBox and dimensions
-        const vb = svg.getAttribute("viewBox");
-        const w = svg.getAttribute("width");
-        const h = svg.getAttribute("height");
-
-        const container = containerRef.current;
-        if (container) {
-          container.innerHTML = "";
-          const importedNode = document.importNode(
-            newSvg,
-            true,
-          ) as SVGSVGElement;
-          if (vb) importedNode.setAttribute("viewBox", vb);
-          if (w) importedNode.setAttribute("width", w);
-          if (h) importedNode.setAttribute("height", h);
-          container.appendChild(importedNode);
-          svgElRef.current = importedNode;
-        }
-      }
-
-      paper.default.project.clear();
+      await outlineStrokes(svg);
+      clearSelection();
       notifyChange();
     } catch (err) {
       console.error("Stroke outline failed:", err);
@@ -236,13 +132,22 @@ function App() {
         "ストロークのアウトライン化に失敗しました。コンソールを確認してください。",
       );
     }
-  }, [svgElRef, containerRef, notifyChange]);
+  }, [svgElRef, clearSelection, notifyChange]);
 
   const handleExport = useCallback(() => {
     const svg = svgElRef.current;
     if (!svg) return;
     exportSvg(svg, fileName);
   }, [svgElRef, fileName]);
+
+  const handlePreviewInTab = useCallback(() => {
+    const svg = svgElRef.current;
+    if (!svg) return;
+    const svgString = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([svgString], { type: "image/svg+xml" });
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
+  }, [svgElRef]);
 
   // Delete key handler
   useEffect(() => {
@@ -281,6 +186,13 @@ function App() {
             className="text-xs px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-50"
           >
             ファイルを開く
+          </button>
+          <button
+            onClick={handlePreviewInTab}
+            disabled={!loaded}
+            className="text-xs px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            別タブで確認
           </button>
           <button
             onClick={handleExport}

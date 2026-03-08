@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <!-- 1. Cubic bezier with sharp turn -->
+  <path d="M30,50 C100,10 100,90 170,50" stroke="#E06738" stroke-width="8" fill="none" stroke-linecap="round"/>
+
+  <!-- 2. S-curve -->
+  <path d="M30,120 C80,80 120,160 170,120" stroke="#3B82F6" stroke-width="6" fill="none"/>
+
+  <!-- 3. Sharp angle polyline -->
+  <polyline points="200,30 250,80 210,80 260,30" fill="none" stroke="#10B981" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- 4. Tight loop / cusp -->
+  <path d="M200,140 Q250,100 230,150 Q210,200 260,160" stroke="#F59E0B" stroke-width="5" fill="none"/>
+
+  <!-- 5. Dashed curve -->
+  <path d="M30,220 C80,180 120,260 170,220" stroke="#8B5CF6" stroke-width="6" fill="none" stroke-dasharray="12,6" stroke-linecap="round"/>
+
+  <!-- 6. Very short path (edge case) -->
+  <path d="M300,250 L302,252" stroke="#EF4444" stroke-width="10" fill="none" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <!-- 1. Stroke only (no fill) - should become filled outline -->
+  <path d="M30,30 L150,30" stroke="#E06738" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <text x="160" y="35" font-size="12" fill="#999">stroke only, round cap</text>
+
+  <!-- 2. Stroke + fill - should split into fill path + outline path -->
+  <rect x="30" y="60" width="120" height="50" fill="#223B52" stroke="#E06738" stroke-width="4"/>
+  <text x="160" y="90" font-size="12" fill="#999">fill + stroke</text>
+
+  <!-- 3. Circle with thick stroke -->
+  <circle cx="90" cy="170" r="30" fill="none" stroke="#3B82F6" stroke-width="6"/>
+  <text x="160" y="175" font-size="12" fill="#999">circle, stroke only</text>
+
+  <!-- 4. Polyline with stroke -->
+  <polyline points="30,230 70,210 110,250 150,220" fill="none" stroke="#10B981" stroke-width="5" stroke-linejoin="round"/>
+  <text x="160" y="235" font-size="12" fill="#999">polyline, round join</text>
+
+  <!-- 5. Dashed stroke -->
+  <line x1="30" y1="280" x2="150" y2="280" stroke="#F59E0B" stroke-width="4" stroke-dasharray="10,5"/>
+  <text x="160" y="285" font-size="12" fill="#999">dashed line (精度注意)</text>
+</svg>
