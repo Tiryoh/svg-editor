@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <g transform="translate(10, 10)">
+    <rect x="0" y="0" width="80" height="80" fill="#223B52" />
+    <circle cx="40" cy="40" r="20" fill="#E06738" />
+  </g>
+  <g transform="translate(100, 100)">
+    <rect x="0" y="0" width="60" height="60" fill="#FFFFFF" stroke="#223B52" stroke-width="2" />
+    <path d="M10,10 L50,10 L30,50 Z" fill="#E06738" />
+  </g>
+  <!-- Small path for detection test -->
+  <rect x="195" y="195" width="1" height="1" fill="#000000" />
+</svg>
