@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "b0f04571d42d",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "TODO.md",
+    "e2e/svg-editor.spec.ts",
+    "public/test-css-colors.svg",
+    "src/hooks/useInspect.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/b0/f04571d42d/0/metadata.json",
+      "transcript": "/b0/f04571d42d/0/full.jsonl",
+      "content_hash": "/b0/f04571d42d/0/content_hash.txt",
+      "prompt": "/b0/f04571d42d/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 21,
+    "cache_creation_tokens": 14285,
+    "cache_read_tokens": 1245444,
+    "output_tokens": 4666,
+    "api_call_count": 17
+  }
+}
