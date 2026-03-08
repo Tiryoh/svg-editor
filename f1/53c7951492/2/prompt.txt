@@ -1,0 +1,123 @@
+続けて
+
+---
+
+小さいsvgは開けるのは確認しました。大きいのはひらけていないのか何もないところを見ているのか不明です。表示サイズの調整はこの後のフェーズになりますか？
+
+---
+
+フィッティングの仕組み教えて。横幅だけ合わせている？縦長の画像のときに上と下が見切れています
+
+---
+
+うーん初回ファイルを開けないです。あとドラッグ&ドロップも効かないです。ファイルを開く、はいけます
+
+---
+
+初回開けない問題は治ってなさそうです
+
+---
+
+機能するようになりました！ここまでで一旦コミットしましょう
+
+---
+
+cmykとrgbは切り替えできるようにして
+
+---
+
+あと表示はZoomとかパンとか移動もできるようになりますか？
+
+---
+
+デフォルトrgbで。次のタスクは？
+
+---
+
+まずは1で
+
+---
+
+良さそう
+
+---
+
+2に移行
+
+---
+
+動作確認難しいな、何かできますか？
+
+---
+
+ブラウザがフリーズします
+
+strokeToPath.ts:74 Failed to outline stroke for path: 
+outlineStrokes    @    strokeToPath.ts:74
+await in outlineStrokes        
+(anonymous)    @    App.tsx:126
+handleOutline    @    CleanupPanel.tsx:32
+
+---
+
+strokeToPath.ts:48 Failed to outline stroke for element: TypeError: paperPath.offsetStroke is not a function
+    at processElement (strokeToPath.ts:103:50)
+    at outlineStrokes (strokeToPath.ts:46:7)
+    at async App.tsx:126:7
+    at async handleOutline (CleanupPanel.tsx:32:7)
+outlineStrokes    @    strokeToPath.ts:48
+await in outlineStrokes        
+(anonymous)    @    App.tsx:126
+handleOutline    @    CleanupPanel.tsx:32
+
+---
+
+stroke自体はできるようになりました。dashed lineは直線になりました。これは意図通りですか？
+
+---
+
+1 paper.js を捨てた理由に捨てもう一度教えて
+
+---
+
+stroke only, round cap がえぐれています
+
+---
+
+e2eテストを実装しましょうか
+
+---
+
+e2eテストは別で進めるので、現状のTODOをまとめておいて。今2の途中で3までやろうとしていることがわかるように。
+
+---
+
+TODO.mdに書き出して
+
+---
+
+round cap のえぐれ修正いきましょう
+
+---
+
+3つともえぐれていますね
+
+---
+
+ok, todo.mdを更新しておいて
+
+---
+
+テスト画像使ってe2eテスト追加しておくのはどう？
+
+---
+
+そもそも既存のテストが今のところ通ってないのでちょっと待ってて
+
+---
+
+ok
+
+---
+
+@TODO.md のPhase 2のタスクを実装していきましょう
